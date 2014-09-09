@@ -2,6 +2,7 @@
 ##==========
 ##Author:  george_liu_2@yahoo.com
 ###Sentiment Analyzing book review in Python with NLTK
+### This is the phase 2 code
 
 * OS: Windows 7
 * Language: Python 2.7
