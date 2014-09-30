@@ -1,31 +1,23 @@
-import wpf
+from Preprocessor import *
+from iSentiWordNet import *
+from SWNClassifier import *
 
-from System.Windows import Window
-from NBClassifier import *
-from Preprocess import *
+SWN_FILENAME = "C:\\Python27\\nltk_data\\corpora\\sentiwordnet\\SentiWordNet_3.0.0.txt"
 
-classifier_obj = NaiveBayesClassifer()
-splitter = Splitter()
-
-def create_classifier():
-    #Create Naive Bayes Classifer and train it
-    classifier = classifier_obj.get_sentiment_analysis_classifier()    
-    classifier_obj.evaluate_classifier()
-
-class Bookreview(Window):
+class Bookreview(object):
+    # This will be GUI class, currently, no any functionality
     def __init__(self):
-        wpf.LoadComponent(self, 'Bookreview.xaml')
-    
-    def Button_Click(self, sender, e):
-        customer_review = self.tb_text.Text
-        customer_words = splitter.split(customer_review)
-        self.tb_Result.Text = classifier_obj.nb_classifier.classify(classifier_obj.bag_of_words(customer_words))
-    
-    def bt_Clear_Click(self, sender, e):
-        self.tb_text.Text = ""
-    
-    def bt_Quit_Click(self, sender, e):
-        self.Close()
+        self.reviews = ""
+        self.pre_processor = Preprocessor() 
+        self.iswn = SentiWordNetCorpusReader(SWN_FILENAME)
+        self.swn_classifier = SWNClassifier(self.iswn, self.pre_processor)
+
+    def do_analysis(self, file_path):
+        sentences = self.pre_processor.pre_process_file(file_path)
+        sents = []
+        doc_results = (0, 0.0)
+        doc_results, sents = self.swn_classifier.sentiment_analysis(sentences) #sentiment analysis, determine document opinion
+        return doc_results, sents
 
 
      
