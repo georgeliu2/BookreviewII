@@ -1,5 +1,5 @@
 Notes on Sentiment Analysis Tool Bookreview
-Semp. 30, 2014
+October 28, 2014
 
        This project will develop a sentiment analysis tool to analyze customer book reviews and give  authors and publishers an ideal about the customers evaluation on a book.
        The customers reviews on a book are collected from web, emails or other sources.  The final target of the project is to let Bookreview  to be able  to summarize an individual customer review (if it is a long review); list all aspects in the review and rate the aspects; list typical sentiment representation in the review.  Also it will synthesize all reviews and  give a final rate to the book; list all iimportant aspects and their rates.  
@@ -26,5 +26,8 @@ and pos/neg scores. This is the next version work.
 This initial release classifying  accurate is around 55.4%. The test corpus is 
 the "Sentiment Polarity Dataset Version 2.0 by Bo Pang and Lillian Lee"
 
-The next versions will enhance its accurate, extract aspects  from sentences, give  rates to them 
+
+* version 2
+This version implemented aspects extraction from sentences. It calculated each aspect score and the sentence pos/neg scores.
+ 
 

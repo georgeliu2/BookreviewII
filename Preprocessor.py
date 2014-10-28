@@ -18,29 +18,19 @@ class Preprocessor(object):
         self.nltk_splitter = nltk.data.load('tokenizers/punkt/english.pickle')
         self.nltk_tokenizer = nltk.tokenize.TreebankWordTokenizer()
 
-    '''
-    def files_in_dir(self, path, pos = "pos"):
-        from os import listdir
-        from os.path import isfile, join
-        path = join(path, pos)
-        onlyfiles = [ join(path, f) for f in listdir(path) if isfile(join(path,f)) ]
-        return onlyfiles
-    '''
     def pre_process_file(self, filepath):
         fileobj = open(filepath, 'r')
         file_str = fileobj.read()
         #split into sentences, tokenlize each sentence and then pos tag them
-        return self.pos_tag_sents(self.split(file_str) ) 
+        splited_sentences = self.split(file_str)
+        return self.pos_tag_sents(splited_sentences) 
     
-
-
-    """
+    def split(self, text):
+        """
         input format: a paragraph of plain text
         output format: a list of lists of words.
             e.g.: [['this', 'is', 'a', 'sentence'], ['this', 'is', 'another', 'one']]
-    """
-    def split(self, text):
-       
+        """
         sentences = self.nltk_splitter.tokenize(text)  #split text into sentences in a list        
         tokenized_sentences = [self.nltk_tokenizer.tokenize(sent) for sent in sentences] 
         return tokenized_sentences
@@ -49,17 +39,23 @@ class Preprocessor(object):
         '''
         analyze a sentence, and add pos tags to words
         input: a list whose element is a sentence list whose elements are terms splitted from the sentence
-        output: return a list with sentences, each sentence is a list whose element is a tuple (word, pos tag) 
+        output: return two lists, a simplified pos tagged sentence and not simplifed tagged sentence
+                an element of the list  a tuple (word, pos tag) 
         '''
+        tagged_sents = []
         simp_tagged_sents = []
         for sent in sentences:
             tagged_sent = nltk.pos_tag(sent)
+            tagged_sents.append(tagged_sent)
             simplified = [(word, self.get_wordnet_pos(tag)) for word, tag in tagged_sent]
             simp_tagged_sents.append(simplified)
-        return simp_tagged_sents
+        return simp_tagged_sents, tagged_sents
 
-    #convert TreeBank TAGs to WordNet TAGs
+
     def get_wordnet_pos(self, treebank_tag):
+        """
+            convert TreeBank TAGs to WordNet TAGs
+        """
         if treebank_tag.startswith('J'):
             return wn.ADJ
         elif treebank_tag.startswith('V'):

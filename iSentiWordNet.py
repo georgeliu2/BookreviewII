@@ -1,7 +1,7 @@
 """
 Interface to SentiWordNet using the NLTK WordNet classes.
 
----Copied from Chris Potts
+---Most of the code is copied from Chris Potts
 """
 
 import re
@@ -86,6 +86,22 @@ class SentiWordNetCorpusReader:
             yield SentiSynset(pos_score, neg_score, synset)
 
  
+    def get_word_score(self, word, pos_tag) :
+        """ get the word sentiment scores from SentiWordNet
+            if the word has more than one sentes, return their average scores.
+        """
+        synsets = self.senti_synsets(word, pos_tag)      
+        num_synsets  =  len(synsets)   
+        word_pos_score = 0
+        word_neg_score = 0
+        if num_synsets >=1 :               
+            for synset in synsets:
+                word_pos_score += synset.pos_score
+                word_neg_score += synset.neg_score
+            word_pos_score = word_pos_score/num_synsets  #average synsets scores
+            word_neg_score = word_neg_score/num_synsets
+        return word_pos_score, word_neg_score
+
 ######################################################################
             
 class SentiSynset:

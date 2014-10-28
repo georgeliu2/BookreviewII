@@ -26,7 +26,7 @@ class SWNClassifier(object):
         suppose it sbjects to normal distribution, extimate: mean(SPS) and std(SPS)
         print out  its frequencies.
         SPSD = SPS - SNS      SPS in (0, 1); SNS in (0,1); but SPSD in (-1, 1) but we only keep POS sentences,
-            that is if SPSD <0, we ignore is, therefore SPSD is in (0, 1)
+            that is if SPSD <0, we ignore it, therefore SPSD is in (0, 1)
 
         SPSD score 0.01, 0.02, ..., 0.99
         Frequency   2     5          2
@@ -35,7 +35,7 @@ class SWNClassifier(object):
 
         Document DPS, DNS
 
-        For sentence
+        For a sentence
         1. Check if it is POS or NEG
             if doc lable is if sum(word pos)  > sum(word neg) :   POS
             else :  NEG
@@ -88,7 +88,7 @@ class SWNClassifier(object):
             else :
                 return 0.0, 0.0
 
-    # Calcule the document in training scores
+    # Calcule the document scores in training 
     # input:
     #       doc -- list of sentences whihc are pos tagged ones
     #       pos -- if the document is positive os negative
@@ -195,38 +195,14 @@ class SWNClassifier(object):
                 break
             count += 1
         return threshold
-    '''
-   #calculate a sentence sentiment scores based on average pos/neg scores
-   #input: a sentence list, whose element is a tuple (word, pos tag)
-   #output: sentence pos, neg score
+
+
     def cal_sent_scores(self, sentence):
-        sent_pos_score = 0
-        sent_neg_score = 0
-        word_count = 0
-        for word, tag in sentence:
-            word_pos_score = 0
-            word_neg_score = 0
-            synsets = self.iswn.senti_synsets(word, tag)      
-            num_synsets  =  len(synsets)   
-            if num_synsets >=1 :
-                for synset in synsets:
-                    word_pos_score += synset.pos_score
-                    word_neg_score += synset.neg_score
-                word_pos_score = word_pos_score/num_synsets  #average synsets scores
-                word_neg_score = word_neg_score/num_synsets
-            sent_pos_score += word_pos_score
-            sent_neg_score += word_neg_score
-            word_count += 1
-        #if word_count > 0 :
-        sent_pos_score = sent_pos_score# / word_count    accumulate all words scores of a sentence
-        sent_neg_score = sent_neg_score# / word_count
-        
-        return sent_pos_score, sent_neg_score
-    '''
-    #calculate a sentence sentiment scores based on max word pos/neg score
-    #input: a sentence list, whose element is a tuple (word, pos tag)
-    #output: sentence pos, neg score
-    def cal_sent_scores(self, sentence):
+        """
+            calculate a sentence sentiment scores based on max word pos/neg score
+            input: a sentence list, whose element is a tuple (word, pos tag)
+            output: sentence pos, neg score
+        """
         word_count = 0
         max_word_pos_score = 0
         max_word_neg_score = 0
@@ -276,11 +252,14 @@ class SWNClassifier(object):
         else :
             return (0, 0.0)
 
-    #calculate document pos and neg scores
-    #input: sentences, a list of sentences, element in the list is a tuple(label, pos_score, neg_score)
-    #       label 1 -- pos; -1 -- neg; 0 -- neutral
-    #output: return pos_score, neg_score
+
     def cal_doc_scores(self, sentences) :
+        """
+            calculate document pos and neg scores
+            input: sentences, a list of sentences, element in the list is a tuple(label, pos_score, neg_score)
+            label 1 -- pos; -1 -- neg; 0 -- neutral
+            output: return pos_score, neg_score
+        """
         doc_pos_score =0
         doc_neg_score = 0
         for label, pos, neg in sentences:
@@ -318,9 +297,25 @@ class SWNClassifier(object):
         doc_pos_score = doc_pos_score/count
         doc_neg_score = doc_neg_score/count
         
-        return self.classify_doc(doc_pos_score, doc_neg_score), sents_results
+        return self.classify_doc(doc_pos_score, doc_neg_score)
         
        
+    def evaluate_doc(self, aspects) :
+        """
+            Calculate document scores according to the aspects scores
+            input: aspects - type dictionary, its element: key - string, aspect; value - list of [frequency, pos_score, neg_score]
+            return (pos_neg_label, score)   pos_neg_label: 1 - positive, -1 - negative, 0 - nutral
+                                            score - the document pos/neg score
+        """
+        pos_score = 0
+        neg_score = 0
+        for key, value in aspects.items() :
+            pos_score += value[1]/value[0] #average aspect score
+            neg_score += value[2]/value[0]
+        count = len(aspects)
+        pos_scores = pos_score/count
+        neg_score = neg_score/count
+        return self.classify_doc(pos_scores, neg_score)
 
     def read_book_reviews(self, file_name) :
         file = open(file_name, 'r')

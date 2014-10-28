@@ -12,6 +12,9 @@
     <OutputPath>.</OutputPath>
     <Name>BookReviewAnalysisII_init</Name>
     <RootNamespace>BookReviewAnalysisII_init</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>g:\projects\SentimentAnalysis\Test\config.txt</CommandLineArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +27,9 @@
   <ItemGroup>
     <Compile Include="Bookreview.py" />
     <Compile Include="BookReviewAnalysisII.py" />
+    <Compile Include="Aspect.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="iSentiWordNet.py" />
     <Compile Include="Preprocessor.py" />
     <Compile Include="SWNClassifier.py" />
