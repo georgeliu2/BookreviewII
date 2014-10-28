@@ -1,0 +1,6 @@
+g:\projects\SentimentAnalysis\Test						#FILE_PATH  file path
+book_review.txt 								#FILE_NAME  inut file name
+review_results.txt								#RESULTS  output file name
+C:\Python27\nltk_data\corpora\sentiwordnet\SentiWordNet_3.0.0.txt		#SWN_FILENAME SentiWordNet   file
+C:\maltparser172\test								#WORKING_DIR  Malt Parser working dir
+engmalt.linear-1.7								#mco_file  Trained model
